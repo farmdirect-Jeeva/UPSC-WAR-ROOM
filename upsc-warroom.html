@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>UPSC War Room — IAS Command Centre</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08090d;--bg2:#0d1018;--card:#11151e;--card2:#161b26;
+  --border:#1c2236;--border2:#243050;
+  --gold:#d4a843;--gold2:#f0c85a;--gold-dim:#5a4010;
+  --saffron:#e8621a;--saffron2:#ff8040;
+  --green:#0f8a06;--green2:#18c40e;
+  --blue:#1a5fff;--blue2:#5588ff;
+  --red:#d63031;--purple:#6c5ce7;
+  --text:#dde2f0;--muted:#5a6380;--muted2:#3a4060;
+  --font-h:'Playfair Display',serif;
+  --font-b:'Outfit',sans-serif;
+  --font-m:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-b);min-height:100vh;
+  background-image:radial-gradient(ellipse at 15% 10%,rgba(212,168,67,.08) 0%,transparent 45%),
+  radial-gradient(ellipse at 85% 85%,rgba(15,138,6,.06) 0%,transparent 45%),
+  radial-gradient(ellipse at 50% 50%,rgba(26,95,255,.04) 0%,transparent 60%);}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:4px}
+
+/* DND OVERLAY */
+#dndOverlay{display:none;position:fixed;inset:0;background:#000;z-index:9999;
+  flex-direction:column;align-items:center;justify-content:center;gap:20px;}
+#dndOverlay.active{display:flex;}
+.dnd-title{font-family:var(--font-h);font-size:2.5rem;color:var(--gold);text-align:center;}
+.dnd-sub{color:var(--muted);font-size:1rem;text-align:center;}
+.dnd-timer{font-family:var(--font-m);font-size:4rem;color:var(--gold2);}
+.dnd-exit{margin-top:20px;background:var(--saffron);color:#fff;border:none;
+  border-radius:12px;padding:12px 28px;font-family:var(--font-b);font-size:1rem;
+  font-weight:600;cursor:pointer;}
+
+/* HERO */
+.hero{text-align:center;padding:40px 16px 24px;animation:fadeDown .7s ease both;}
+.tricolor{display:flex;height:4px;width:180px;margin:0 auto 20px;border-radius:99px;overflow:hidden;}
+.tricolor .s{flex:1;background:var(--saffron)}
+.tricolor .w{flex:1;background:#fff}
+.tricolor .g{flex:1;background:var(--green2)}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--font-m);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--gold);border:1px solid var(--gold-dim);padding:4px 14px;border-radius:99px;
+  background:rgba(212,168,67,.05);margin-bottom:14px;}
+.hero h1{font-family:var(--font-h);font-size:clamp(2rem,6vw,3.8rem);font-weight:900;line-height:1.05;
+  background:linear-gradient(135deg,var(--gold2) 0%,var(--saffron) 50%,var(--gold) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero p{margin-top:8px;color:var(--muted);font-size:.9rem;font-weight:300;}
+.hero-actions{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap;}
+.btn-primary{background:linear-gradient(135deg,var(--gold),var(--saffron));color:#000;
+  border:none;border-radius:12px;padding:10px 22px;font-family:var(--font-b);
+  font-weight:700;font-size:.9rem;cursor:pointer;transition:opacity .15s,transform .15s;}
+.btn-primary:hover{opacity:.88;transform:translateY(-1px)}
+.btn-secondary{background:transparent;color:var(--gold);border:1px solid var(--gold-dim);
+  border-radius:12px;padding:10px 22px;font-family:var(--font-b);font-weight:600;
+  font-size:.9rem;cursor:pointer;transition:all .15s;}
+.btn-secondary:hover{background:rgba(212,168,67,.08)}
+
+/* CONTAINER */
+.wrap{max-width:1120px;margin:0 auto;padding:0 14px 80px;}
+
+/* SECTION LABEL */
+.sec-label{font-family:var(--font-m);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.sec-label::before{content:'';display:block;width:20px;height:1px;background:var(--gold);}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px;
+  transition:border-color .2s;}
+.card:hover{border-color:var(--border2);}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.card-title{font-size:.85rem;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px;}
+.card-icon{font-size:1.1rem;}
+
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px;}
+@media(max-width:900px){.g3{grid-template-columns:1fr 1fr;}.g4{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.g2,.g3,.g4{grid-template-columns:1fr;}}
+
+/* ── COUNTDOWN ── */
+.cd-boxes{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.cd-box{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;
+  padding:14px 16px;text-align:center;min-width:70px;flex:1;}
+.cd-num{font-family:var(--font-h);font-size:2rem;font-weight:700;color:var(--gold2);line-height:1;}
+.cd-unit{font-family:var(--font-m);font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:3px;}
+.cd-msg{text-align:center;margin-top:12px;font-style:italic;color:var(--saffron);font-size:.88rem;}
+.cd-date-input{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;
+  padding:5px 10px;font-family:var(--font-m);font-size:.75rem;color:var(--text);outline:none;}
+.cd-date-input:focus{border-color:var(--gold);}
+
+/* ── QUOTE ── */
+.quote-text{font-family:var(--font-h);font-style:italic;font-size:1.05rem;line-height:1.6;
+  color:var(--gold2);margin-bottom:10px;}
+.quote-author{font-family:var(--font-m);font-size:.7rem;color:var(--muted);letter-spacing:.1em;}
+.quote-btn{background:rgba(212,168,67,.1);border:1px solid var(--gold-dim);color:var(--gold);
+  border-radius:8px;padding:6px 14px;font-size:.8rem;cursor:pointer;margin-top:10px;font-family:var(--font-b);}
+
+/* ── POMODORO ── */
+.pomo-ring{width:130px;height:130px;margin:0 auto 10px;position:relative;}
+.pomo-ring svg{transform:rotate(-90deg);}
+.pomo-ring circle{transition:stroke-dashoffset 1s linear;}
+.pomo-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.pomo-time{font-family:var(--font-h);font-size:1.8rem;font-weight:700;color:var(--gold2);}
+.pomo-mode{font-family:var(--font-m);font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+.pomo-btns{display:flex;gap:8px;justify-content:center;margin-top:10px;}
+.pomo-btn{border:none;border-radius:10px;padding:8px 16px;font-family:var(--font-b);
+  font-weight:600;font-size:.82rem;cursor:pointer;transition:opacity .15s;}
+.pomo-btn.start{background:var(--green);color:#fff;}
+.pomo-btn.pause{background:var(--saffron);color:#fff;}
+.pomo-btn.reset{background:var(--border2);color:var(--text);}
+.pomo-sessions{text-align:center;margin-top:8px;font-family:var(--font-m);font-size:.7rem;color:var(--muted);}
+.pomo-mode-btns{display:flex;gap:6px;justify-content:center;margin-bottom:10px;}
+.mode-btn{border:1px solid var(--border2);background:transparent;color:var(--muted);
+  border-radius:8px;padding:4px 10px;font-size:.75rem;cursor:pointer;font-family:var(--font-b);}
+.mode-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(212,168,67,.08);}
+
+/* ── BOX BREATHING ── */
+.breath-circle{
+  width:120px;height:120px;border-radius:50%;margin:10px auto;
+  border:3px solid var(--border2);display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-h);font-size:1rem;color:var(--blue2);
+  transition:transform 4s ease,background .5s,border-color .5s;
+  background:rgba(26,95,255,.05);
+}
+.breath-circle.expand{transform:scale(1.4);border-color:var(--blue2);background:rgba(26,95,255,.12);}
+.breath-circle.hold{transform:scale(1.4);border-color:var(--gold);background:rgba(212,168,67,.08);}
+.breath-circle.shrink{transform:scale(1);border-color:var(--green2);background:rgba(15,138,6,.05);}
+.breath-phase{text-align:center;font-family:var(--font-m);font-size:.65rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.breath-btn{background:var(--blue);color:#fff;border:none;border-radius:10px;
+  padding:8px 20px;font-family:var(--font-b);font-weight:600;font-size:.82rem;
+  cursor:pointer;display:block;margin:10px auto 0;}
+.breath-count{text-align:center;font-family:var(--font-m);font-size:.7rem;color:var(--muted);margin-top:6px;}
+
+/* ── TASKS ── */
+.task-input-row{display:flex;gap:8px;margin-bottom:12px;}
+.task-input{flex:1;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;
+  padding:9px 12px;font-family:var(--font-b);font-size:.85rem;color:var(--text);outline:none;}
+.task-input:focus{border-color:var(--gold);}
+.task-add-btn{background:var(--gold);color:#000;border:none;border-radius:10px;
+  padding:9px 14px;font-weight:700;font-size:1rem;cursor:pointer;}
+.task-list{display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto;}
+.task-item{display:flex;align-items:center;gap:10px;padding:9px 12px;
+  background:var(--bg2);border:1px solid var(--border);border-radius:10px;
+  cursor:pointer;transition:border-color .2s;user-select:none;}
+.task-item:hover{border-color:var(--border2);}
+.task-item.done{opacity:.55;}
+.task-item.done .task-text{text-decoration:line-through;color:var(--muted);}
+.task-check{width:18px;height:18px;border-radius:50%;border:2px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;font-size:.65rem;flex-shrink:0;
+  transition:all .2s;}
+.task-item.done .task-check{background:var(--green2);border-color:var(--green2);color:#fff;}
+.task-text{font-size:.85rem;flex:1;}
+.task-pri{font-size:.6rem;padding:2px 7px;border-radius:99px;font-family:var(--font-m);}
+.task-pri.high{background:rgba(214,48,49,.15);color:var(--red);}
+.task-pri.med{background:rgba(212,168,67,.15);color:var(--gold);}
+.task-pri.low{background:rgba(15,138,6,.15);color:var(--green2);}
+.task-del{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:.8rem;padding:2px 6px;}
+.task-del:hover{color:var(--red);}
+.task-pri-sel{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;
+  padding:8px;font-size:.8rem;color:var(--text);outline:none;font-family:var(--font-b);}
+.task-progress{margin-top:10px;}
+.tp-label{display:flex;justify-content:space-between;font-family:var(--font-m);font-size:.62rem;color:var(--muted);margin-bottom:5px;}
+.tp-track{height:4px;background:var(--border2);border-radius:99px;overflow:hidden;}
+.tp-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--green2));border-radius:99px;transition:width .4s ease;}
+
+/* ── SUBJECT TRACKER ── */
+.subj-list{display:flex;flex-direction:column;gap:8px;}
+.subj-item{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;}
+.subj-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.subj-name{font-size:.88rem;font-weight:600;}
+.subj-pct{font-family:var(--font-m);font-size:.72rem;color:var(--gold);}
+.subj-track{height:5px;background:var(--border2);border-radius:99px;overflow:hidden;}
+.subj-fill{height:100%;border-radius:99px;transition:width .6s ease;}
+.subj-controls{display:flex;gap:6px;margin-top:8px;}
+.subj-btn{border:1px solid var(--border2);background:transparent;color:var(--muted);
+  border-radius:6px;padding:3px 10px;font-size:.75rem;cursor:pointer;font-family:var(--font-b);}
+.subj-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+/* ── SYLLABUS ── */
+.syl-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.syl-tab{border:1px solid var(--border2);background:transparent;color:var(--muted);
+  border-radius:8px;padding:5px 12px;font-size:.78rem;cursor:pointer;font-family:var(--font-b);transition:all .2s;}
+.syl-tab.active{background:rgba(212,168,67,.1);border-color:var(--gold);color:var(--gold);}
+.syl-panel{display:none;}
+.syl-panel.active{display:block;}
+.syl-items{display:flex;flex-direction:column;gap:5px;max-height:240px;overflow-y:auto;}
+.syl-item{display:flex;align-items:center;gap:10px;padding:8px 10px;
+  background:var(--bg2);border:1px solid var(--border);border-radius:9px;
+  cursor:pointer;user-select:none;transition:border-color .15s;}
+.syl-item.done{opacity:.6;}
+.syl-item.done .syl-text{text-decoration:line-through;color:var(--muted);}
+.syl-chk{width:16px;height:16px;border-radius:4px;border:2px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;font-size:.6rem;flex-shrink:0;
+  transition:all .2s;}
+.syl-item.done .syl-chk{background:var(--green2);border-color:var(--green2);color:#fff;}
+.syl-text{font-size:.82rem;}
+.syl-prog{margin-top:10px;}
+
+/* ── CLASSES ── */
+.class-list{display:flex;flex-direction:column;gap:8px;max-height:220px;overflow-y:auto;}
+.class-item{display:flex;align-items:center;gap:12px;padding:10px 12px;
+  background:var(--bg2);border:1px solid var(--border);border-radius:12px;}
+.class-time{font-family:var(--font-m);font-size:.72rem;color:var(--blue2);min-width:50px;}
+.class-name{font-size:.85rem;font-weight:500;flex:1;}
+.class-link{background:var(--blue);color:#fff;border:none;border-radius:8px;
+  padding:5px 12px;font-size:.75rem;cursor:pointer;font-family:var(--font-b);font-weight:600;}
+.class-add-row{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
+.class-inp{flex:1;min-width:80px;background:var(--bg2);border:1px solid var(--border2);
+  border-radius:8px;padding:7px 10px;font-size:.8rem;color:var(--text);outline:none;font-family:var(--font-b);}
+.class-inp:focus{border-color:var(--blue2);}
+
+/* ── ROUTINE ── */
+.routine-list{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto;}
+.routine-item{display:flex;align-items:center;gap:10px;padding:9px 12px;
+  background:var(--bg2);border:1px solid var(--border);border-radius:10px;}
+.routine-time{font-family:var(--font-m);font-size:.68rem;color:var(--gold);min-width:48px;}
+.routine-act{font-size:.85rem;flex:1;}
+.routine-del{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:.8rem;}
+.routine-del:hover{color:var(--red);}
+.routine-add-row{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;}
+.r-inp{flex:1;min-width:80px;background:var(--bg2);border:1px solid var(--border2);
+  border-radius:8px;padding:7px 10px;font-size:.8rem;color:var(--text);outline:none;font-family:var(--font-b);}
+.r-inp:focus{border-color:var(--gold);}
+
+/* ── AI FRIEND ── */
+.ai-chat{height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;
+  margin-bottom:10px;padding:4px 2px;}
+.ai-msg{max-width:85%;padding:9px 13px;border-radius:14px;font-size:.83rem;line-height:1.5;}
+.ai-msg.bot{background:rgba(26,95,255,.12);border:1px solid rgba(26,95,255,.2);
+  color:var(--text);align-self:flex-start;border-bottom-left-radius:4px;}
+.ai-msg.user{background:rgba(212,168,67,.12);border:1px solid rgba(212,168,67,.2);
+  color:var(--text);align-self:flex-end;border-bottom-right-radius:4px;}
+.ai-input-row{display:flex;gap:8px;}
+.ai-input{flex:1;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;
+  padding:9px 12px;font-family:var(--font-b);font-size:.85rem;color:var(--text);outline:none;}
+.ai-input:focus{border-color:var(--blue2);}
+.ai-send{background:var(--blue);color:#fff;border:none;border-radius:10px;
+  padding:9px 16px;font-weight:700;cursor:pointer;font-size:.9rem;}
+.ai-thinking{color:var(--muted);font-style:italic;font-size:.8rem;}
+
+/* ── STUDY GROUPS ── */
+.group-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+.group-item{display:flex;align-items:center;gap:12px;padding:10px 13px;
+  background:var(--bg2);border:1px solid var(--border);border-radius:12px;}
+.group-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--blue));
+  display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:#fff;flex-shrink:0;}
+.group-name{font-size:.88rem;font-weight:600;flex:1;}
+.group-members{font-family:var(--font-m);font-size:.65rem;color:var(--muted);}
+.group-join{background:var(--purple);color:#fff;border:none;border-radius:8px;
+  padding:5px 12px;font-size:.75rem;cursor:pointer;font-family:var(--font-b);font-weight:600;}
+.group-create-row{display:flex;gap:8px;}
+.grp-inp{flex:1;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;
+  padding:7px 10px;font-size:.8rem;color:var(--text);outline:none;font-family:var(--font-b);}
+.grp-inp:focus{border-color:var(--purple);}
+.grp-btn{background:var(--purple);color:#fff;border:none;border-radius:8px;
+  padding:7px 14px;font-weight:700;cursor:pointer;font-size:.85rem;}
+
+/* ── DND ── */
+.dnd-toggle{display:flex;align-items:center;justify-content:space-between;
+  padding:12px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;}
+.toggle-label{font-size:.88rem;font-weight:500;}
+.toggle-switch{width:44px;height:24px;border-radius:99px;background:var(--border2);
+  position:relative;cursor:pointer;transition:background .25s;}
+.toggle-switch.on{background:var(--saffron);}
+.toggle-knob{width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;
+  top:3px;left:3px;transition:left .25s;}
+.toggle-switch.on .toggle-knob{left:23px;}
+.dnd-settings{display:flex;flex-direction:column;gap:8px;}
+.dnd-opt{display:flex;align-items:center;gap:10px;font-size:.83rem;color:var(--muted);}
+
+/* STATS ROW */
+.stats-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.stat-pill{flex:1;min-width:100px;background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:14px;text-align:center;}
+.stat-num{font-family:var(--font-h);font-size:1.6rem;font-weight:700;color:var(--gold2);line-height:1;}
+.stat-label{font-family:var(--font-m);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:3px;}
+
+/* WEEK CHART */
+.week-chart{display:flex;align-items:flex-end;gap:6px;height:80px;margin-top:8px;}
+.wbar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.wbar{width:100%;border-radius:4px 4px 0 0;background:linear-gradient(180deg,var(--gold2),var(--gold-dim));
+  transition:height .5s ease;min-height:2px;}
+.wbar-day{font-family:var(--font-m);font-size:.55rem;color:var(--muted);letter-spacing:.05em;}
+.wbar-val{font-family:var(--font-m);font-size:.58rem;color:var(--gold);}
+.wbar-input{width:100%;background:transparent;border:none;outline:none;
+  font-family:var(--font-m);font-size:.62rem;color:var(--text);text-align:center;
+  padding:2px 0;cursor:pointer;}
+
+@keyframes fadeDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+.animate{animation:fadeUp .6s ease both;}
+</style>
+</head>
+<body>
+
+<!-- DND OVERLAY -->
+<div id="dndOverlay">
+  <div style="font-size:3rem">🎯</div>
+  <div class="dnd-title">Focus Mode Active</div>
+  <div class="dnd-sub">You are in Deep Work. Stay focused, IAS awaits.</div>
+  <div class="dnd-timer" id="dndClock">00:00</div>
+  <div style="color:var(--muted);font-size:.85rem;margin-top:-10px">Focus session time</div>
+  <button class="dnd-exit" onclick="exitDND()">✕ Exit Focus Mode</button>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="tricolor"><div class="s"></div><div class="w"></div><div class="g"></div></div>
+  <div class="hero-badge">🇮🇳 UPSC CSE Command Centre</div>
+  <h1>Your IAS War Room</h1>
+  <p>Prepare with full determination. Your dream of serving the nation starts here.</p>
+  <div class="hero-actions">
+    <button class="btn-primary" onclick="enterDND()">🎯 Enter Focus Mode</button>
+    <button class="btn-secondary" onclick="document.getElementById('aiSection').scrollIntoView({behavior:'smooth'})">🤖 Ask AI Friend</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- STATS ROW -->
+<div class="stats-row animate">
+  <div class="stat-pill">
+    <div class="stat-num" id="statDays">—</div>
+    <div class="stat-label">Days to Prelims</div>
+  </div>
+  <div class="stat-pill">
+    <div class="stat-num" id="statTasks">0</div>
+    <div class="stat-label">Tasks Done Today</div>
+  </div>
+  <div class="stat-pill">
+    <div class="stat-num" id="statPomos">0</div>
+    <div class="stat-label">Pomodoros Today</div>
+  </div>
+  <div class="stat-pill">
+    <div class="stat-num" id="statSyl">0%</div>
+    <div class="stat-label">Syllabus Done</div>
+  </div>
+  <div class="stat-pill">
+    <div class="stat-num" id="statHours">0h</div>
+    <div class="stat-label">Study This Week</div>
+  </div>
+</div>
+
+<!-- ROW 1: COUNTDOWN + QUOTE + POMODORO -->
+<div class="g3 animate">
+
+  <!-- COUNTDOWN -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title"><span class="card-icon">⏳</span>Exam Countdown</div>
+      <input type="date" class="cd-date-input" id="examDate" onchange="updateCountdown()"/>
+    </div>
+    <div class="cd-boxes">
+      <div class="cd-box"><div class="cd-num" id="cdD">--</div><div class="cd-unit">Days</div></div>
+      <div class="cd-box"><div class="cd-num" id="cdH">--</div><div class="cd-unit">Hours</div></div>
+      <div class="cd-box"><div class="cd-num" id="cdM">--</div><div class="cd-unit">Mins</div></div>
+      <div class="cd-box"><div class="cd-num" id="cdS">--</div><div class="cd-unit">Secs</div></div>
+    </div>
+    <div class="cd-msg" id="cdMsg">Set your exam date above ↑</div>
+  </div>
+
+  <!-- DAILY QUOTE -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title"><span class="card-icon">💡</span>Daily Motivation</div>
+    </div>
+    <div class="quote-text" id="quoteText">"Loading inspiration..."</div>
+    <div class="quote-author" id="quoteAuthor">— UPSC War Room</div>
+    <button class="quote-btn" onclick="nextQuote()">Next Quote ↻</button>
+  </div>
+
+  <!-- POMODORO -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title"><span class="card-icon">⏱️</span>Study Timer</div>
+    </div>
+    <div class="pomo-mode-btns">
+      <button class="mode-btn active" onclick="setMode('focus',25,this)">Focus 25m</button>
+      <button class="mode-btn" onclick="setMode('short',5,this)">Break 5m</button>
+      <button class="mode-btn" onclick="setMode('long',15,this)">Long 15m</button>
+    </div>
+    <div class="pomo-ring">
+      <svg width="130" height="130" viewBox="0 0 130 130">
+        <circle cx="65" cy="65" r="56" fill="none" stroke="#1c2236" stroke-width="8"/>
+        <circle id="pomoCircle" cx="65" cy="65" r="56" fill="none" stroke="#d4a843"
+          stroke-width="8" stroke-linecap="round"
+          stroke-dasharray="351.86" stroke-dashoffset="0"/>
+      </svg>
+      <div class="pomo-center">
+        <div class="pomo-time" id="pomoTime">25:00</div>
+        <div class="pomo-mode" id="pomoLabel">Focus</div>
+      </div>
+    </div>
+    <div class="pomo-btns">
+      <button class="pomo-btn start" id="pomoStartBtn" onclick="togglePomo()">▶ Start</button>
+      <button class="pomo-btn reset" onclick="resetPomo()">↺ Reset</button>
+    </div>
+    <div class="pomo-sessions">Sessions today: <span id="pomoSessions">0</span> 🍅</div>
+  </div>
+
+</div>
+
+<!-- ROW 2: TASKS + SUBJECT TRACKER -->
+<div class="g2 animate">
+
+  <!-- DAILY TASKS -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title"><span class="card-icon">✅</span>Daily Task List</div>
+      <span style="font-family:var(--font-m);font-size:.65rem;color:var(--muted)" id="taskCount">0/0</span>
+    </div>
+    <div class="task-input-row">
+      <input class="task-input" id="taskInput" placeholder="Add a study task…" onkeydown="if(event.key==='Enter')addTask()"/>
+      <select class="task-pri-sel" id="taskPri">
+        <option value="high">🔴 High</option>
+        <option value="med" selected>🟡 Med</option>
+        <option value="low">🟢 Low</option>
+      </select>
+      <button class="task-add-btn" onclick="addTask()">+</button>
+    </div>
+    <div class="task-list" id="taskList"></div>
+    <div class="task-progress">
+      <div class="tp-label"><span>Progress</span><span id="taskPct">0%</span></div>
+      <div class="tp-track"><div class="tp-fill" id="taskFill" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <!-- SUBJECT TRACKER -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title"><span class="card-icon">📊</span>Subject Progress</div>
+    </div>
+    <div class="subj-list" id="subjList"></div>
+  </div>
+
+</div>
+
+<!-- ROW 3: SYLLABUS + BOX BREATHING -->
+<div class="g2 animate">
+
+  <!-- SYLLABUS CHECKLIST -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title"><span class="card-icon">📚</span>Syllabus Checklist</div>
+      <span style="font-family:var(--font-m);font-size:.65rem;color:var(--gold)" id="sylPct">0%</span>
+    </div>
+    <div class="syl-tabs">
+      <button class="syl-tab active" onclick="switchSyl('gs1',this)">GS-I</button>
+      <button class="syl-tab" onclick="switchSyl('gs2',this)">GS-II</button>
+      <button class="syl-tab" onclick="switchSyl('gs3',this)">GS-III</button>
+      <button class="syl-tab" onclick="switchSyl('gs4',this)">GS-IV</button>
+      <button class="syl-tab" onclick="switchSyl('csat',this)">CSAT</button>
+      <button class="syl-tab" onclick="switchSyl('optional',this)">Optional</button>
+    </div>
+    <div id="sylPanels"></div>
+    <div class="syl-prog">
+      <div class="tp-label"><span>Overall Progress</span><span id="sylTotal">0/0</span></div>
+      <div class="tp-track"><div class="tp-fill" id="sylFill" style="width:0%;background:linear-gradient(90deg,var(--blue),var(--blue2))"></div></div>
+    </div>
+  </div>
+
+  <!-- BOX BREATHING -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title"><span class="card-icon">🫁</span>Box Breathing</div>
+      <span style="font-size:.75rem;color:var(--muted)">Calm your mind</span>
+    </div>
+    <div style="text-align:center;font-size:.78rem;color:var(--muted);margin-bottom:6px;">
+      Inhale 4s → Hold 4s → Exhale 4s → Hold 4s
+    </div>
+    <div class="breath-phase" id="breathPhase">Press Start to Begin</div>
+    <div class="breath-circle" id="breathCircle">Breathe</div>
+    <div class="breath-count" id="breathCount">Cycles: 0</div>
+    <button class="breath-btn" id="breathBtn" onclick="toggleBreath()">▶ Start Breathing</button>
+    <div style="margin-top:14px;background:var(--bg2);border-radius:10px;padding:10px 12px;">
+      <div style="font-size:.8rem;font-weight:600;margin-bottom:6px;color:var(--blue2);">Why Box Breathing?</div>
+      <div style="font-size:.75rem;color:var(--muted);line-height:1.5;">Reduces cortisol (stress hormone), improves focus and emotional regulation. Used by Navy SEALs and top UPSC toppers before study sessions.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ROW 4: ONLINE CLASSES + DAILY ROUTINE -->
+<div class="g2 animate">
+
+  <!-- ONLINE CLASSES -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title"><span class="card-icon">🎥</span>Today's Online Classes</div>
+      <span style="font-size:.75rem;color:var(--muted)" id="classDate"></span>
+    </div>
+    <div class="class-add-row">
+      <input class="class-inp" id="classTime" type="time"/>
+      <input class="class-inp" id="className" placeholder="Class name / Subject"/>
+      <input class="class-inp" id="classLink" placeholder="Meeting link (optional)"/>
+      <button class="task-add-btn" onclick="addClass()" style="background:var(--blue)">+</button>
+    </div>
+    <div class="class-list" id="classList"></div>
+  </div>
+
+  <!-- DAILY ROUTINE -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title"><span class="card-icon">🗓️</span>My Daily Routine</div>
+      <button onclick="resetRoutine()" style="background:none;border:none;color:var(--muted);font-size:.75rem;cursor:pointer;">Reset</button>
+    </div>
+    <div class="routine-add-row">
+      <input class="r-inp" id="rTime" type="time"/>
+      <input class="r-inp" id="rAct" placeholder="Activity…" style="flex:2"/>
+      <button class="task-add-btn" onclick="addRoutine()">+</button>
+    </div>
+    <div class="routine-list" id="routineList"></div>
+  </div>
+
+</div>
+
+<!-- ROW 5: STUDY GROUPS + WEEKLY CHART -->
+<div class="g2 animate">
+
+  <!-- STUDY GROUPS -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title"><span class="card-icon">👥</span>Study Groups</div>
+    </div>
+    <div class="group-list" id="groupList"></div>
+    <div class="group-create-row">
+      <input class="grp-inp" id="grpName" placeholder="Create a new group…" onkeydown="if(event.key==='Enter')createGroup()"/>
+      <button class="grp-btn" onclick="createGroup()">Create</button>
+    </div>
+  </div>
+
+  <!-- WEEKLY STUDY HOURS -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title"><span class="card-icon">📈</span>Weekly Study Hours</div>
+      <span style="font-size:.75rem;color:var(--muted)">Click bars to edit</span>
+    </div>
+    <div class="week-chart" id="weekChart"></div>
+    <div style="text-align:center;font-family:var(--font-m);font-size:.65rem;color:var(--muted);margin-top:8px;">
+      Total this week: <span id="weekTotal" style="color:var(--gold)">0h</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- AI FRIEND -->
+<div class="card animate" id="aiSection" style="margin-bottom:14px;">
+  <div class="card-head">
+    <div class="card-title"><span class="card-icon">🤖</span>AI Study Friend — Ask Anything UPSC</div>
+    <div style="font-size:.72rem;color:var(--muted)">Powered by Claude AI</div>
+  </div>
+  <div class="ai-chat" id="aiChat">
+    <div class="ai-msg bot">Jai Hind! 🇮🇳 I'm your UPSC AI Study Friend. Ask me anything — History, Polity, Geography, Economy, Current Affairs, or study strategy. I'm here to help you crack UPSC CSE!</div>
+  </div>
+  <div class="ai-input-row">
+    <input class="ai-input" id="aiInput" placeholder="Ask me anything about UPSC…" onkeydown="if(event.key==='Enter')sendAI()"/>
+    <button class="ai-send" onclick="sendAI()">Send</button>
+  </div>
+</div>
+
+<!-- DND CARD -->
+<div class="card animate">
+  <div class="card-head">
+    <div class="card-title"><span class="card-icon">🔕</span>Do Not Disturb Settings</div>
+  </div>
+  <div class="dnd-toggle">
+    <div class="toggle-label">🎯 Focus Mode (Full Screen DND)</div>
+    <div class="toggle-switch" id="dndToggle" onclick="toggleDND()"><div class="toggle-knob"></div></div>
+  </div>
+  <div class="dnd-settings">
+    <div class="dnd-opt">⏱️ Auto-start after Pomodoro <span style="margin-left:auto;font-family:var(--font-m);font-size:.7rem;color:var(--gold)">Active</span></div>
+    <div class="dnd-opt">🔕 Block distractions during focus</div>
+    <div class="dnd-opt">📵 Motivational wallpaper during DND</div>
+    <div class="dnd-opt">💪 <em>"Your competition is studying right now."</em></div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+// ═══════════════════════════════════════════════════════
+// QUOTES
+// ═══════════════════════════════════════════════════════
+const quotes = [
+  {t:"The future belongs to those who believe in the beauty of their dreams.",a:"— Eleanor Roosevelt"},
+  {t:"Success is not final, failure is not fatal: it is the courage to continue that counts.",a:"— Winston Churchill"},
+  {t:"An IAS officer is not made in a day. It is made in a thousand days of sacrifice.",a:"— UPSC Wisdom"},
+  {t:"Don't watch the clock; do what it does. Keep going.",a:"— Sam Levenson"},
+  {t:"You have to fight through some bad days to earn the best days of your life.",a:"— UPSC Mantra"},
+  {t:"Arise, awake and stop not till the goal is reached.",a:"— Swami Vivekananda"},
+  {t:"The secret of getting ahead is getting started.",a:"— Mark Twain"},
+  {t:"Dreams don't work unless you do.",a:"— John C. Maxwell"},
+  {t:"It does not matter how slowly you go as long as you do not stop.",a:"— Confucius"},
+  {t:"Believe you can and you're halfway there.",a:"— Theodore Roosevelt"},
+  {t:"Hard work beats talent when talent doesn't work hard.",a:"— Tim Notke"},
+  {t:"The UPSC journey is a marathon, not a sprint. Pace yourself wisely.",a:"— IAS Topper Wisdom"},
+  {t:"Education is the most powerful weapon which you can use to change the world.",a:"— Nelson Mandela"},
+  {t:"Success usually comes to those who are too busy to be looking for it.",a:"— Henry David Thoreau"},
+  {t:"Your only limit is your mind. Train it every day.",a:"— UPSC Motivation"},
+  {t:"Every expert was once a beginner. Keep going.",a:"— Helen Hayes"},
+  {t:"The man who moves a mountain begins by carrying away small stones.",a:"— Confucius"},
+  {t:"India's greatest civil servants were built on nights like tonight.",a:"— UPSC War Room"},
+];
+let qIdx = Math.floor(Math.random()*quotes.length);
+function nextQuote(){
+  qIdx=(qIdx+1)%quotes.length;
+  document.getElementById('quoteText').textContent = `"${quotes[qIdx].t}"`;
+  document.getElementById('quoteAuthor').textContent = quotes[qIdx].a;
+}
+nextQuote();
+
+// ═══════════════════════════════════════════════════════
+// COUNTDOWN
+// ═══════════════════════════════════════════════════════
+let cdInterval;
+function updateCountdown(){
+  const dt = document.getElementById('examDate').value;
+  if(!dt){return;}
+  localStorage.setItem('upsc_examDate',dt);
+  clearInterval(cdInterval);
+  function tick(){
+    const now=new Date(), target=new Date(dt);
+    const diff=target-now;
+    if(diff<=0){
+      ['cdD','cdH','cdM','cdS'].forEach(id=>document.getElementById(id).textContent='0');
+      document.getElementById('cdMsg').textContent='🎉 Exam Day!';
+      document.getElementById('statDays').textContent='0';
+      return;
+    }
+    const d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),
+          m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
+    document.getElementById('cdD').textContent=d;
+    document.getElementById('cdH').textContent=h;
+    document.getElementById('cdM').textContent=m;
+    document.getElementById('cdS').textContent=s;
+    document.getElementById('statDays').textContent=d;
+    const msgs=['Every day counts. Make it count!','Stay consistent. Your dream is worth it!',
+      'The IAS rank is closer than you think.','Sleep less, study more. But sleep smart!',
+      'Your dedication today = Your rank tomorrow.'];
+    document.getElementById('cdMsg').textContent=msgs[d%msgs.length];
+  }
+  tick();cdInterval=setInterval(tick,1000);
+}
+const savedDate=localStorage.getItem('upsc_examDate');
+if(savedDate){document.getElementById('examDate').value=savedDate;updateCountdown();}
+document.getElementById('classDate').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',month:'long',day:'numeric'});
+
+// ═══════════════════════════════════════════════════════
+// POMODORO
+// ═══════════════════════════════════════════════════════
+let pomoRunning=false,pomoInterval,pomoSecondsLeft=25*60,pomoTotalSeconds=25*60,pomoSessionsToday=parseInt(localStorage.getItem('upsc_pomos')||'0');
+document.getElementById('pomoSessions').textContent=pomoSessionsToday;
+document.getElementById('statPomos').textContent=pomoSessionsToday;
+const CIRC=351.86;
+
+function setMode(mode,mins,btn){
+  resetPomo();
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  pomoSecondsLeft=pomoTotalSeconds=mins*60;
+  document.getElementById('pomoLabel').textContent=mode==='focus'?'Focus':mode==='short'?'Short Break':'Long Break';
+  document.getElementById('pomoCircle').style.stroke=mode==='focus'?'#d4a843':mode==='short'?'#18c40e':'#5588ff';
+  renderPomoTime();
+}
+
+function renderPomoTime(){
+  const m=Math.floor(pomoSecondsLeft/60),s=pomoSecondsLeft%60;
+  document.getElementById('pomoTime').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const pct=pomoSecondsLeft/pomoTotalSeconds;
+  document.getElementById('pomoCircle').style.strokeDashoffset=CIRC*(1-pct);
+}
+
+function togglePomo(){
+  if(pomoRunning){
+    clearInterval(pomoInterval);pomoRunning=false;
+    document.getElementById('pomoStartBtn').textContent='▶ Resume';
+  } else {
+    pomoRunning=true;
+    document.getElementById('pomoStartBtn').textContent='⏸ Pause';
+    pomoInterval=setInterval(()=>{
+      pomoSecondsLeft--;renderPomoTime();
+      if(pomoSecondsLeft<=0){
+        clearInterval(pomoInterval);pomoRunning=false;
+        document.getElementById('pomoStartBtn').textContent='▶ Start';
+        pomoSessionsToday++;
+        document.getElementById('pomoSessions').textContent=pomoSessionsToday;
+        document.getElementById('statPomos').textContent=pomoSessionsToday;
+        localStorage.setItem('upsc_pomos',pomoSessionsToday);
+        resetPomo();
+        alert('🍅 Session complete! Take a break.');
+      }
+    },1000);
+  }
+}
+
+function resetPomo(){
+  clearInterval(pomoInterval);pomoRunning=false;
+  pomoSecondsLeft=pomoTotalSeconds;
+  renderPomoTime();
+  document.getElementById('pomoStartBtn').textContent='▶ Start';
+}
+renderPomoTime();
+
+// ═══════════════════════════════════════════════════════
+// BOX BREATHING
+// ═══════════════════════════════════════════════════════
+let breathRunning=false,breathCycles=0,breathPhaseIdx=0,breathTimer;
+const breathPhases=[
+  {label:'Inhale',cls:'expand',dur:4000},
+  {label:'Hold',cls:'hold',dur:4000},
+  {label:'Exhale',cls:'shrink',dur:4000},
+  {label:'Hold',cls:'',dur:4000},
+];
+function runBreath(){
+  const ph=breathPhases[breathPhaseIdx];
+  const el=document.getElementById('breathCircle');
+  el.className='breath-circle '+(ph.cls||'');
+  el.textContent=ph.label;
+  document.getElementById('breathPhase').textContent=`${ph.label}… (${ph.dur/1000}s)`;
+  breathTimer=setTimeout(()=>{
+    breathPhaseIdx=(breathPhaseIdx+1)%4;
+    if(breathPhaseIdx===0){breathCycles++;document.getElementById('breathCount').textContent=`Cycles: ${breathCycles}`;}
+    if(breathRunning)runBreath();
+  },ph.dur);
+}
+function toggleBreath(){
+  if(breathRunning){
+    breathRunning=false;clearTimeout(breathTimer);
+    document.getElementById('breathBtn').textContent='▶ Start Breathing';
+    document.getElementById('breathPhase').textContent='Paused';
+    document.getElementById('breathCircle').className='breath-circle';
+    document.getElementById('breathCircle').textContent='Breathe';
+  } else {
+    breathRunning=true;breathPhaseIdx=0;
+    document.getElementById('breathBtn').textContent='⏹ Stop';
+    runBreath();
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// TASKS
+// ═══════════════════════════════════════════════════════
+let tasks=JSON.parse(localStorage.getItem('upsc_tasks')||'[]');
+function saveTasks(){localStorage.setItem('upsc_tasks',JSON.stringify(tasks));}
+function addTask(){
+  const v=document.getElementById('taskInput').value.trim();
+  if(!v)return;
+  const pri=document.getElementById('taskPri').value;
+  tasks.push({id:Date.now(),text:v,done:false,pri});
+  document.getElementById('taskInput').value='';
+  saveTasks();renderTasks();
+}
+function toggleTask(id){
+  const t=tasks.find(x=>x.id===id);if(t)t.done=!t.done;
+  saveTasks();renderTasks();
+}
+function deleteTask(id){tasks=tasks.filter(x=>x.id!==id);saveTasks();renderTasks();}
+function renderTasks(){
+  const el=document.getElementById('taskList');
+  const sorted=[...tasks].sort((a,b)=>({high:0,med:1,low:2}[a.pri]-{high:0,med:1,low:2}[b.pri]));
+  el.innerHTML=sorted.map(t=>`
+    <div class="task-item${t.done?' done':''}" onclick="toggleTask(${t.id})">
+      <div class="task-check">${t.done?'✓':''}</div>
+      <span class="task-text">${t.text}</span>
+      <span class="task-pri ${t.pri}">${t.pri==='high'?'🔴 High':t.pri==='med'?'🟡 Med':'🟢 Low'}</span>
+      <button class="task-del" onclick="event.stopPropagation();deleteTask(${t.id})">✕</button>
+    </div>`).join('');
+  const done=tasks.filter(x=>x.done).length,total=tasks.length;
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById('taskCount').textContent=`${done}/${total}`;
+  document.getElementById('taskPct').textContent=pct+'%';
+  document.getElementById('taskFill').style.width=pct+'%';
+  document.getElementById('statTasks').textContent=done;
+}
+renderTasks();
+
+// ═══════════════════════════════════════════════════════
+// SUBJECTS
+// ═══════════════════════════════════════════════════════
+const subjects=[
+  {name:'History & Culture',pct:0,color:'#e8621a'},
+  {name:'Indian Polity',pct:0,color:'#1a6aff'},
+  {name:'Geography',pct:0,color:'#0f8a06'},
+  {name:'Economy',pct:0,color:'#d4a843'},
+  {name:'Environment & Ecology',pct:0,color:'#6c5ce7'},
+  {name:'Science & Technology',pct:0,color:'#00b894'},
+  {name:'Current Affairs',pct:0,color:'#d63031'},
+  {name:'Ethics (GS-IV)',pct:0,color:'#fd79a8'},
+];
+let savedSubjs=JSON.parse(localStorage.getItem('upsc_subjects')||'null');
+if(savedSubjs&&savedSubjs.length===subjects.length)subjects.forEach((s,i)=>s.pct=savedSubjs[i].pct);
+function saveSubjs(){localStorage.setItem('upsc_subjects',JSON.stringify(subjects));}
+function changeSubj(i,delta){
+  subjects[i].pct=Math.max(0,Math.min(100,subjects[i].pct+delta));
+  saveSubjs();renderSubjects();
+}
+function renderSubjects(){
+  document.getElementById('subjList').innerHTML=subjects.map((s,i)=>`
+    <div class="subj-item">
+      <div class="subj-header">
+        <span class="subj-name">${s.name}</span>
+        <span class="subj-pct">${s.pct}%</span>
+      </div>
+      <div class="subj-track"><div class="subj-fill" style="width:${s.pct}%;background:${s.color}"></div></div>
+      <div class="subj-controls">
+        <button class="subj-btn" onclick="changeSubj(${i},-10)">-10%</button>
+        <button class="subj-btn" onclick="changeSubj(${i},-5)">-5%</button>
+        <button class="subj-btn" onclick="changeSubj(${i},5)">+5%</button>
+        <button class="subj-btn" onclick="changeSubj(${i},10)">+10%</button>
+      </div>
+    </div>`).join('');
+}
+renderSubjects();
+
+// ═══════════════════════════════════════════════════════
+// SYLLABUS
+// ═══════════════════════════════════════════════════════
+const sylData={
+  gs1:['Ancient Indian History','Medieval Indian History','Modern Indian History','Indian Culture & Heritage','World History (Post 1850)','Indian Society','Social Empowerment','Communalism, Regionalism','Geomorphology & Climatology','World Physical Geography','Indian Geography','Resources Distribution'],
+  gs2:['Indian Constitution & Polity','Parliament & State Legislatures','Executive & Judiciary','Federalism & Local Government','Representation of People Act','Government Policies & Interventions','Development Processes & NGOs','Welfare Schemes for Vulnerable','Health, Education, HRD','Governance & Accountability','International Relations','India & Neighbours','Regional & Global Groupings','Effect of Policies on India\'s Interests'],
+  gs3:['Indian Economy & Planning','Inclusive Growth','Budgeting & Financial Institutions','Agriculture & Allied Sectors','Land Reforms','Food Processing','Liberalization, Industrial Policy','Infrastructure: Energy, Ports, Airports','Investment Models','Science & Technology Developments','IPR & Space Technology','Environmental Conservation','Disaster Management','Internal Security Issues','Cyber Security & Money Laundering'],
+  gs4:['Ethics & Human Interface','Attitude & Aptitude','Emotional Intelligence','Public Service Values','Probity in Governance','Case Studies & Application','Philosophers: Gandhi, Rawls, Kant','Corporate Governance','Ethical Issues in Politics','Corruption & Anti-corruption'],
+  csat:['Reading Comprehension','Logical Reasoning & Analytical Ability','Decision Making & Problem Solving','General Mental Ability','Basic Numeracy (Class X)','Data Interpretation','English Comprehension (Class X)'],
+  optional:['Paper 1 — Unit 1','Paper 1 — Unit 2','Paper 1 — Unit 3','Paper 1 — Unit 4','Paper 1 — Unit 5','Paper 2 — Unit 1','Paper 2 — Unit 2','Paper 2 — Unit 3','Paper 2 — Unit 4','Paper 2 — Unit 5'],
+};
+let sylState=JSON.parse(localStorage.getItem('upsc_syl')||'{}');
+Object.keys(sylData).forEach(k=>{if(!sylState[k])sylState[k]=sylData[k].map(()=>false);});
+function saveSyl(){localStorage.setItem('upsc_syl',JSON.stringify(sylState));}
+function toggleSyl(paper,idx){sylState[paper][idx]=!sylState[paper][idx];saveSyl();renderSyl();}
+function switchSyl(paper,btn){
+  document.querySelectorAll('.syl-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.syl-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('syl-'+paper).classList.add('active');
+}
+function renderSyl(){
+  const container=document.getElementById('sylPanels');
+  container.innerHTML=Object.keys(sylData).map(paper=>`
+    <div class="syl-panel${paper==='gs1'?' active':''}" id="syl-${paper}">
+      <div class="syl-items">${sylData[paper].map((item,i)=>`
+        <div class="syl-item${sylState[paper][i]?' done':''}" onclick="toggleSyl('${paper}',${i})">
+          <div class="syl-chk">${sylState[paper][i]?'✓':''}</div>
+          <span class="syl-text">${item}</span>
+        </div>`).join('')}
+      </div>
+    </div>`).join('');
+  const total=Object.values(sylData).flat().length;
+  const done=Object.entries(sylState).reduce((acc,[k,arr])=>acc+arr.filter(Boolean).length,0);
+  const pct=Math.round(done/total*100);
+  document.getElementById('sylPct').textContent=pct+'%';
+  document.getElementById('sylTotal').textContent=`${done}/${total}`;
+  document.getElementById('sylFill').style.width=pct+'%';
+  document.getElementById('statSyl').textContent=pct+'%';
+}
+renderSyl();
+
+// ═══════════════════════════════════════════════════════
+// ONLINE CLASSES
+// ═══════════════════════════════════════════════════════
+let classes=JSON.parse(localStorage.getItem('upsc_classes')||'[]');
+function saveClasses(){localStorage.setItem('upsc_classes',JSON.stringify(classes));}
+function addClass(){
+  const t=document.getElementById('classTime').value;
+  const n=document.getElementById('className').value.trim();
+  const l=document.getElementById('classLink').value.trim();
+  if(!t||!n)return;
+  classes.push({id:Date.now(),time:t,name:n,link:l});
+  classes.sort((a,b)=>a.time.localeCompare(b.time));
+  document.getElementById('classTime').value='';
+  document.getElementById('className').value='';
+  document.getElementById('classLink').value='';
+  saveClasses();renderClasses();
+}
+function deleteClass(id){classes=classes.filter(x=>x.id!==id);saveClasses();renderClasses();}
+function renderClasses(){
+  document.getElementById('classList').innerHTML=classes.length?classes.map(c=>`
+    <div class="class-item">
+      <span class="class-time">${c.time}</span>
+      <span class="class-name">${c.name}</span>
+      ${c.link?`<button class="class-link" onclick="window.open('${c.link}','_blank')">Join 🔗</button>`:''}
+      <button class="task-del" onclick="deleteClass(${c.id})">✕</button>
+    </div>`).join('')
+  :'<div style="color:var(--muted);font-size:.82rem;text-align:center;padding:14px;">No classes added yet.</div>';
+}
+renderClasses();
+
+// ═══════════════════════════════════════════════════════
+// DAILY ROUTINE
+// ═══════════════════════════════════════════════════════
+const defaultRoutine=[
+  {id:1,time:'05:00',act:'Wake up & Freshen up'},
+  {id:2,time:'05:30',act:'Meditation & Yoga (30 min)'},
+  {id:3,time:'06:00',act:'Newspaper Reading (The Hindu / IE)'},
+  {id:4,time:'07:30',act:'Breakfast & Break'},
+  {id:5,time:'08:00',act:'GS Subject Study — Session 1'},
+  {id:6,time:'10:30',act:'Short Break (Box Breathing)'},
+  {id:7,time:'10:45',act:'GS Subject Study — Session 2'},
+  {id:8,time:'13:00',act:'Lunch & Rest'},
+  {id:9,time:'14:00',act:'Optional Subject / CSAT'},
+  {id:10,time:'16:30',act:'Evening Walk & Refreshment'},
+  {id:11,time:'17:00',act:'Current Affairs & Revision'},
+  {id:12,time:'19:00',act:'Dinner & Relaxation'},
+  {id:13,time:'20:00',act:'Answer Writing Practice'},
+  {id:14,time:'21:30',act:'Light Reading / Previous Year Papers'},
+  {id:15,time:'22:30',act:'Sleep (8 hours for memory consolidation)'},
+];
+let routine=JSON.parse(localStorage.getItem('upsc_routine')||'null')||defaultRoutine;
+function saveRoutine(){localStorage.setItem('upsc_routine',JSON.stringify(routine));}
+function addRoutine(){
+  const t=document.getElementById('rTime').value;
+  const a=document.getElementById('rAct').value.trim();
+  if(!t||!a)return;
+  routine.push({id:Date.now(),time:t,act:a});
+  routine.sort((a,b)=>a.time.localeCompare(b.time));
+  document.getElementById('rTime').value='';
+  document.getElementById('rAct').value='';
+  saveRoutine();renderRoutine();
+}
+function deleteRoutine(id){routine=routine.filter(x=>x.id!==id);saveRoutine();renderRoutine();}
+function resetRoutine(){routine=[...defaultRoutine];saveRoutine();renderRoutine();}
+function renderRoutine(){
+  document.getElementById('routineList').innerHTML=routine.map(r=>`
+    <div class="routine-item">
+      <span class="routine-time">${r.time}</span>
+      <span class="routine-act">${r.act}</span>
+      <button class="routine-del" onclick="deleteRoutine(${r.id})">✕</button>
+    </div>`).join('');
+}
+renderRoutine();
+
+// ═══════════════════════════════════════════════════════
+// STUDY GROUPS
+// ═══════════════════════════════════════════════════════
+let groups=JSON.parse(localStorage.getItem('upsc_groups')||'null')||[
+  {id:1,name:'Delhi Batch — GS Mains',members:12,joined:false},
+  {id:2,name:'Polity & Constitution Circle',members:8,joined:false},
+  {id:3,name:'Economy Discussion Group',members:15,joined:true},
+  {id:4,name:'Current Affairs Daily',members:24,joined:false},
+];
+function saveGroups(){localStorage.setItem('upsc_groups',JSON.stringify(groups));}
+function toggleGroup(id){
+  const g=groups.find(x=>x.id===id);
+  if(g){g.joined=!g.joined;g.members+=g.joined?1:-1;}
+  saveGroups();renderGroups();
+}
+function createGroup(){
+  const n=document.getElementById('grpName').value.trim();
+  if(!n)return;
+  groups.push({id:Date.now(),name:n,members:1,joined:true});
+  document.getElementById('grpName').value='';
+  saveGroups();renderGroups();
+}
+function renderGroups(){
+  const colors=['#6c5ce7','#1a6aff','#e8621a','#0f8a06','#d4a843','#d63031'];
+  document.getElementById('groupList').innerHTML=groups.map((g,i)=>`
+    <div class="group-item">
+      <div class="group-avatar" style="background:${colors[i%colors.length]}">${g.name[0]}</div>
+      <div style="flex:1">
+        <div class="group-name">${g.name}</div>
+        <div class="group-members">👥 ${g.members} members</div>
+      </div>
+      <button class="group-join" onclick="toggleGroup(${g.id})"
+        style="background:${g.joined?'var(--green)':'var(--purple)'}">
+        ${g.joined?'✓ Joined':'Join'}
+      </button>
+    </div>`).join('');
+}
+renderGroups();
+
+// ═══════════════════════════════════════════════════════
+// WEEKLY CHART
+// ═══════════════════════════════════════════════════════
+const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+let weekHours=JSON.parse(localStorage.getItem('upsc_week')||'[0,0,0,0,0,0,0]');
+function saveWeek(){localStorage.setItem('upsc_week',JSON.stringify(weekHours));}
+function renderWeek(){
+  const max=Math.max(...weekHours,1);
+  const total=weekHours.reduce((a,b)=>a+b,0);
+  document.getElementById('weekTotal').textContent=total+'h';
+  document.getElementById('statHours').textContent=total+'h';
+  document.getElementById('weekChart').innerHTML=days.map((d,i)=>`
+    <div class="wbar-wrap">
+      <div class="wbar-val">${weekHours[i]}h</div>
+      <div class="wbar" style="height:${Math.max(4,(weekHours[i]/max)*60)}px"></div>
+      <input class="wbar-input" type="number" min="0" max="24" value="${weekHours[i]}"
+        onchange="weekHours[${i}]=Math.min(24,Math.max(0,+this.value));saveWeek();renderWeek()"/>
+      <div class="wbar-day">${d}</div>
+    </div>`).join('');
+}
+renderWeek();
+
+// ═══════════════════════════════════════════════════════
+// DND
+// ═══════════════════════════════════════════════════════
+let dndActive=false,dndStartTime,dndClockInterval;
+function enterDND(){
+  dndActive=true;
+  document.getElementById('dndOverlay').classList.add('active');
+  document.getElementById('dndToggle').classList.add('on');
+  dndStartTime=Date.now();
+  dndClockInterval=setInterval(()=>{
+    const elapsed=Math.floor((Date.now()-dndStartTime)/1000);
+    const m=Math.floor(elapsed/60),s=elapsed%60;
+    document.getElementById('dndClock').textContent=
+      `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  },1000);
+}
+function exitDND(){
+  dndActive=false;
+  document.getElementById('dndOverlay').classList.remove('active');
+  document.getElementById('dndToggle').classList.remove('on');
+  clearInterval(dndClockInterval);
+}
+function toggleDND(){dndActive?exitDND():enterDND();}
+
+// ═══════════════════════════════════════════════════════
+// AI STUDY FRIEND
+// ═══════════════════════════════════════════════════════
+async function sendAI(){
+  const input=document.getElementById('aiInput');
+  const q=input.value.trim();if(!q)return;
+  input.value='';
+  const chat=document.getElementById('aiChat');
+  chat.innerHTML+=`<div class="ai-msg user">${q}</div>`;
+  chat.innerHTML+=`<div class="ai-msg bot ai-thinking" id="aiThinking">Thinking… 🤔</div>`;
+  chat.scrollTop=chat.scrollHeight;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:`You are a friendly, expert UPSC CSE study companion called "IAS Buddy". 
+You help UPSC aspirants with:
+- UPSC CSE syllabus topics: History, Polity, Geography, Economy, Environment, Science & Technology, Ethics, Current Affairs
+- Study strategies, time management, answer writing tips
+- Motivation and mental health during UPSC preparation
+- Previous year question analysis
+- Quick concept explanations
+
+Keep answers concise, clear and exam-focused. Use bullet points when helpful. 
+Always be encouraging and motivating. End with a short motivational line when appropriate.
+Format: Use simple text, no markdown symbols like ** or ##.`,
+        messages:[{role:'user',content:q}]
+      })
+    });
+    const data=await res.json();
+    const reply=data.content?.[0]?.text||'Sorry bro, try again!';
+    document.getElementById('aiThinking').remove();
+    chat.innerHTML+=`<div class="ai-msg bot">${reply.replace(/\n/g,'<br/>')}</div>`;
+    chat.scrollTop=chat.scrollHeight;
+  }catch(e){
+    document.getElementById('aiThinking').remove();
+    chat.innerHTML+=`<div class="ai-msg bot">Network error. Please check connection and try again! 🙏</div>`;
+    chat.scrollTop=chat.scrollHeight;
+  }
+}
+</script>
+</body>
+</html>
